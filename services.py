@@ -14,7 +14,7 @@ load_dotenv()
 # --- 配置 ---
 # 从环境变量中读取 API Key，如果找不到则为空字符串
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-SAVE_PATH = "path/to/your/nextcloud/folder"
+SAVE_PATH = "path/to/your/folder"
 MAX_RESULTS = 5
 SEARCH_MAX_RESULTS = 20 # 搜索时返回更多结果供选择
 

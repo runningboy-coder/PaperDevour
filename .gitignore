@@ -8,7 +8,8 @@ eggs/
 lib/
 lib64/
 parts/
-/Volumes
+Volumes/
+path/
 sdist/
 var/
 wheels/
