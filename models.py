@@ -26,11 +26,21 @@ class Article(db.Model):
     original_summary = db.Column(db.Text)
     local_path = db.Column(db.String(255))
     authors = db.relationship('Author', secondary=article_author_association, back_populates='articles')
+    # 級聯刪除：當文章被刪除時，其所有關聯的分析和問答記錄也會被自動刪除
     analyses = db.relationship('Analysis', backref='article', lazy=True, cascade="all, delete-orphan")
+    qna_history = db.relationship('QnaHistory', backref='article', lazy=True, cascade="all, delete-orphan")
 
 class Analysis(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     article_id = db.Column(db.Integer, db.ForeignKey('article.id'), nullable=False)
     analysis_type = db.Column(db.String(50), nullable=False)  # 'summary' or 'detailed'
     content = db.Column(db.JSON)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+# *** 新增模型 ***: 用於存儲問答記錄
+class QnaHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    article_id = db.Column(db.Integer, db.ForeignKey('article.id'), nullable=False)
+    question = db.Column(db.Text, nullable=False)
+    answer = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

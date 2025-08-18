@@ -1,0 +1,7 @@
+Flask
+Flask-Cors
+Flask-SQLAlchemy
+APScheduler
+arxiv
+openai
+requests

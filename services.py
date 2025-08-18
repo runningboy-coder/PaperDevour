@@ -24,7 +24,7 @@ Abstract:
 """
 
 DETAILED_PROMPT = """
-Please provide a detailed analysis of the following academic paper abstract in JSON format.
+Please provide a detailed analysis of the following academic paper abstract in JSON format in simplified Chinese. 
 The JSON object must contain these keys:
 - "background": A brief introduction to the research area and the problem it addresses.
 - "methodology": A description of the methods or techniques used in the paper.
@@ -170,6 +170,15 @@ def analyze_and_store_article(article):
     
     db.session.commit()
     print(f"Finished analysis for: {article.title}")
+
+def regenerate_analysis_for_article(article):
+    """删除现有分析并重新生成"""
+    # 刪除舊的分析
+    Analysis.query.filter_by(article_id=article.id).delete()
+    db.session.commit()
+    print(f"Deleted existing analyses for article: {article.title}")
+    # 重新分析
+    analyze_and_store_article(article)
 
 def run_fetch_and_process_job():
     print("Running scheduled job: Fetching and processing papers...")

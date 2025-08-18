@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PaperDevour</title>
+    <title>AI 研究伙伴</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -26,7 +26,7 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M16.89 15.54c.34-.34.34-.89 0-1.23l-1.88-1.88a.87.87 0 0 0-1.23 0l-1.88 1.88a.87.87 0 0 0 0 1.23l1.88 1.88c.34.34.89.34 1.23 0zM12 14.12l1.29-1.29a.87.87 0 0 0 0-1.23L12 10.31l-1.29 1.29a.87.87 0 0 0 0 1.23zm-1.54-5.63c.34-.34.89-.34 1.23 0l1.88 1.88a.87.87 0 0 0 1.23 0l1.88-1.88a.87.87 0 0 0 0-1.23l-1.88-1.88a.87.87 0 0 0-1.23 0L12 7.12l-1.29-1.29a.87.87 0 0 0-1.23 0l-1.88 1.88a.87.87 0 0 0 0 1.23l1.88 1.88c.34.34.89.34 1.23 0zm-5.63 1.54c.34-.34.34-.89 0-1.23L3.54 7.51a.87.87 0 0 0-1.23 0L.43 9.39a.87.87 0 0 0 0 1.23l1.88 1.88c.34.34.89.34 1.23 0zM12 23.57a.87.87 0 0 0 .62-.26l1.88-1.88a.87.87 0 0 0 0-1.23l-1.88-1.88a.87.87 0 0 0-1.23 0l-1.88 1.88a.87.87 0 0 0 0 1.23l1.88 1.88c.17.17.4.26.62.26"/></svg>
-                <h1 class="text-xl font-bold text-slate-100">PaperDevour</h1>
+                <h1 class="text-xl font-bold text-slate-100">AI 研究伙伴</h1>
             </div>
             <div class="flex items-center space-x-4">
                 <button id="fetch-now-btn" title="根据预设关键词获取最新文章" class="text-slate-400 hover:text-white">
@@ -172,7 +172,9 @@
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({entry_ids})
-        })
+        }),
+        deleteArticle: (id) => fetchApi(`${API_BASE_URL}/api/articles/${id}`, { method: 'DELETE' }),
+        regenerateAnalysis: (id) => fetchApi(`${API_BASE_URL}/api/articles/${id}/regenerate`, { method: 'POST' })
     };
 
     // --- Render Functions ---
@@ -222,6 +224,15 @@
         let content = '';
         const summary = article.summary_analysis || {};
         const detailed = article.detailed_analysis || {};
+        const qnaHistory = article.qna_history || [];
+
+        const actionButtons = `
+            <div class="mt-8 pt-6 border-t border-slate-700 flex items-center space-x-4">
+                <a href="${article.pdf_url}" target="_blank" class="bg-sky-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-500 text-sm">阅读原文</a>
+                <button data-action="regenerate" class="bg-slate-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-slate-500 text-sm">重新生成</button>
+                <button data-action="delete" class="bg-red-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-red-500 text-sm">删除文章</button>
+            </div>
+        `;
 
         if (currentTab === 'summary') {
             content = `
@@ -229,7 +240,9 @@
                 <p class="text-slate-400 mb-6">${article.authors.join(', ')}</p>
                 <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
                     <p class="text-slate-300 leading-relaxed">${summary.simplified_summary_zh || '无摘要'}</p>
-                </div>`;
+                </div>
+                ${actionButtons}
+            `;
         } else if (currentTab === 'detailed') {
             content = `
                 <h1 class="text-2xl font-bold text-slate-100 mb-6">${article.title}</h1>
@@ -238,11 +251,18 @@
                     <div><h3 class="font-semibold text-lg text-sky-400 mb-2">使用方法</h3><p>${detailed.methodology || '无'}</p></div>
                     <div><h3 class="font-semibold text-lg text-sky-400 mb-2">核心创新点</h3><ul class="list-disc list-inside space-y-1">${(detailed.key_innovations || []).map(i => `<li>${i}</li>`).join('') || '无'}</ul></div>
                     <div><h3 class="font-semibold text-lg text-sky-400 mb-2">潜在影响</h3><p>${detailed.potential_impact || '无'}</p></div>
-                </div>`;
+                </div>
+                ${actionButtons}
+            `;
         } else if (currentTab === 'qna') {
             content = `
                 <h1 class="text-2xl font-bold text-slate-100 mb-6">论文问答</h1>
-                <div id="qna-history" class="mb-4 space-y-4"></div>
+                <div id="qna-history" class="mb-4 space-y-4">
+                    ${qnaHistory.map(q => `
+                        <div class="text-right"><span class="bg-sky-600 text-white p-2 rounded-lg inline-block">${q.question}</span></div>
+                        <div><span class="bg-slate-700 text-slate-200 p-2 rounded-lg inline-block">${q.answer}</span></div>
+                    `).join('')}
+                </div>
                 <div class="flex">
                     <input type="text" id="qna-input" placeholder="针对这篇文章提问..." class="flex-grow bg-slate-900 border border-slate-600 rounded-l-md p-2 focus:outline-none focus:ring-2 focus:ring-sky-500">
                     <button id="qna-submit-btn" class="bg-sky-600 text-white font-semibold px-4 rounded-r-md hover:bg-sky-500">发送</button>
@@ -301,10 +321,9 @@
         input.value = '';
         input.disabled = true;
         
-        const result = await api.postQuestion(currentArticleId, question);
-        historyEl.innerHTML += `<div><span class="bg-slate-700 text-slate-200 p-2 rounded-lg inline-block">${result.answer}</span></div>`;
-        input.disabled = false;
-        input.focus();
+        await api.postQuestion(currentArticleId, question);
+        const article = await api.getArticleDetails(currentArticleId);
+        renderTabContent(article);
     }
     
     async function handleSearch(e) {
@@ -338,13 +357,18 @@
     // --- Initialization ---
     async function initialize() {
         try {
-            await api.getArticles();
             articlesData = await api.getArticles();
             renderArticleList();
             
             if (articlesData.length > 0) {
-                renderDetailView(articlesData[0].id);
-                document.querySelector('.tab[data-tab="summary"]').classList.add('active');
+                if (!currentArticleId || !articlesData.find(a => a.id === currentArticleId)) {
+                    currentArticleId = articlesData[0].id;
+                }
+                renderDetailView(currentArticleId);
+                document.querySelector(`.tab[data-tab="${currentTab}"]`).classList.add('active');
+            } else {
+                detailViewEl.classList.add('hidden');
+                detailPlaceholderEl.classList.remove('hidden');
             }
         } catch (error) {
             console.error("Initialization failed:", error);
@@ -353,51 +377,69 @@
     }
 
     // --- Event Listeners Setup ---
-    settingsBtn.addEventListener('click', async () => {
-        const keywords = await api.getKeywords();
-        renderKeywords(keywords);
-        settingsModal.classList.remove('hidden');
-        settingsModal.classList.add('flex');
-    });
-    closeModalBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
-    addKeywordBtn.addEventListener('click', handleKeywordAdd);
-    keywordsListEl.addEventListener('click', handleKeywordDelete);
-    
-    articleListEl.addEventListener('click', (e) => {
-        const item = e.target.closest('.article-item');
-        if (item) renderDetailView(parseInt(item.dataset.id));
-    });
+    document.addEventListener('DOMContentLoaded', () => {
+        settingsBtn.addEventListener('click', async () => {
+            const keywords = await api.getKeywords();
+            renderKeywords(keywords);
+            settingsModal.classList.remove('hidden');
+            settingsModal.classList.add('flex');
+        });
+        closeModalBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+        addKeywordBtn.addEventListener('click', handleKeywordAdd);
+        keywordsListEl.addEventListener('click', handleKeywordDelete);
+        
+        articleListEl.addEventListener('click', (e) => {
+            const item = e.target.closest('.article-item');
+            if (item) renderDetailView(parseInt(item.dataset.id));
+        });
 
-    detailViewEl.addEventListener('click', async (e) => {
-        if (e.target.matches('.tab')) {
-            currentTab = e.target.dataset.tab;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            e.target.classList.add('active');
-            if (currentArticleId) {
-                const article = await api.getArticleDetails(currentArticleId);
-                renderTabContent(article);
+        detailContentEl.addEventListener('click', async (e) => {
+            const action = e.target.dataset.action;
+            if (action === 'delete') {
+                const articleToDelete = articlesData.find(a => a.id === currentArticleId);
+                if (confirm(`确定要删除文章 "${articleToDelete.title}" 吗？`)) {
+                    await api.deleteArticle(currentArticleId);
+                    currentArticleId = null;
+                    await initialize();
+                }
+            } else if (action === 'regenerate') {
+                alert('已开始重新生成分析，请稍后...');
+                await api.regenerateAnalysis(currentArticleId);
+                renderDetailView(currentArticleId);
             }
-        }
-        if (e.target.id === 'qna-submit-btn') {
-            handleQnaSubmit();
-        }
-    });
+        });
 
-    fetchNowBtn.addEventListener('click', async () => {
-        alert('已开始在后台获取最新文章，完成后将自动刷新列表。');
-        await api.fetchOnDemand();
-        await initialize();
-    });
-    searchInput.addEventListener('keyup', handleSearch);
-    closeSearchModalBtn.addEventListener('click', () => searchResultsModal.classList.add('hidden'));
-    batchImportBtn.addEventListener('click', handleBatchImport);
-    searchResultsList.addEventListener('change', () => {
-        const count = searchResultsList.querySelectorAll('input[type="checkbox"]:checked').length;
-        selectionCounter.textContent = `已选择 ${count} 篇`;
-        batchImportBtn.disabled = count === 0;
-    });
+        detailViewEl.addEventListener('click', async (e) => {
+            if (e.target.matches('.tab')) {
+                currentTab = e.target.dataset.tab;
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+                if (currentArticleId) {
+                    const article = await api.getArticleDetails(currentArticleId);
+                    renderTabContent(article);
+                }
+            }
+            if (e.target.id === 'qna-submit-btn') {
+                handleQnaSubmit();
+            }
+        });
 
-    document.addEventListener('DOMContentLoaded', initialize);
+        fetchNowBtn.addEventListener('click', async () => {
+            alert('已开始在后台获取最新文章，完成后将自动刷新列表。');
+            await api.fetchOnDemand();
+            await initialize();
+        });
+        searchInput.addEventListener('keyup', handleSearch);
+        closeSearchModalBtn.addEventListener('click', () => searchResultsModal.classList.add('hidden'));
+        batchImportBtn.addEventListener('click', handleBatchImport);
+        searchResultsList.addEventListener('change', () => {
+            const count = searchResultsList.querySelectorAll('input[type="checkbox"]:checked').length;
+            selectionCounter.textContent = `已选择 ${count} 篇`;
+            batchImportBtn.disabled = count === 0;
+        });
+
+        initialize();
+    });
     </script>
 </body>
 </html>
