@@ -1,0 +1,47 @@
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+Volumes/
+path/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtualenv
+.env
+venv/
+ENV/
+
+# Database
+research_assistant.db
+*.sqlite3
+
+# IDE and OS files
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+# 忽略 macOS 在外部驱动器上生成的元数据文件
+._*
+
+# AI / ML Model Artifacts & Temporary files
+# 忽略所有以 .model.py 结尾的文件
+*.model.py
+# 忽略常见的模型权重文件
+*.pt
+*.pth
+*.onnx
+*.h5
+# 忽略 Jupyter Notebook 检查点文件
+.ipynb_checkpoints/

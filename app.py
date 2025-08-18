@@ -1,0 +1,137 @@
+# app.py - 主應用入口
+from flask import Flask, jsonify, request, send_from_directory
+from flask_cors import CORS
+from database import db, init_database
+from models import Keyword, Author, Article, Analysis, QnaHistory
+import services
+import scheduler
+
+# --- Flask 應用設置 ---
+app = Flask(__name__, static_folder='static')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///research_assistant.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db.init_app(app)
+CORS(app)
+
+# --- API 路由 ---
+
+@app.route('/api/articles')
+def get_articles():
+    articles = Article.query.order_by(Article.published.desc()).all()
+    results = []
+    for article in articles:
+        # 只獲取簡易分析用於列表展示
+        simple_analysis = Analysis.query.filter_by(article_id=article.id, analysis_type='summary').first()
+        results.append({
+            'id': article.id,
+            'title': article.title,
+            'published': article.published.strftime('%Y-%m-%d'),
+            'authors': [author.name for author in article.authors],
+            'summary_analysis': simple_analysis.content if simple_analysis else None
+        })
+    return jsonify(results)
+
+@app.route('/api/articles/<int:article_id>')
+def get_article_details(article_id):
+    article = Article.query.get_or_404(article_id)
+    summary = Analysis.query.filter_by(article_id=article.id, analysis_type='summary').first()
+    detailed = Analysis.query.filter_by(article_id=article.id, analysis_type='detailed').first()
+    qna_history = QnaHistory.query.filter_by(article_id=article.id).order_by(QnaHistory.created_at).all()
+    
+    return jsonify({
+        'id': article.id,
+        'title': article.title,
+        'published': article.published.strftime('%Y-%m-%d'),
+        'authors': [author.name for author in article.authors],
+        'pdf_url': article.pdf_url,
+        'original_summary': article.original_summary,
+        'summary_analysis': summary.content if summary else None,
+        'detailed_analysis': detailed.content if detailed else None,
+        'qna_history': [{'question': q.question, 'answer': q.answer} for q in qna_history]
+    })
+
+@app.route('/api/articles/<int:article_id>/ask', methods=['POST'])
+def ask_question(article_id):
+    article = Article.query.get_or_404(article_id)
+    question = request.json.get('question')
+    if not question:
+        return jsonify({'error': 'Question is required'}), 400
+    
+    detailed_analysis = Analysis.query.filter_by(article_id=article.id, analysis_type='detailed').first()
+    context = f"Original Abstract: {article.original_summary}\n\nDetailed Analysis: {detailed_analysis.content if detailed_analysis else ''}"
+    
+    answer = services.AnalysisService.ask_question_with_context(question, context)
+
+    # 保存問答記錄到資料庫
+    new_qna = QnaHistory(article_id=article.id, question=question, answer=answer)
+    db.session.add(new_qna)
+    db.session.commit()
+
+    return jsonify({'answer': answer})
+
+@app.route('/api/articles/<int:article_id>', methods=['DELETE'])
+def delete_article(article_id):
+    article = Article.query.get_or_404(article_id)
+    db.session.delete(article)
+    db.session.commit()
+    return jsonify({'status': 'success', 'message': 'Article deleted.'})
+
+@app.route('/api/articles/<int:article_id>/regenerate', methods=['POST'])
+def regenerate_analysis(article_id):
+    article = Article.query.get_or_404(article_id)
+    services.regenerate_analysis_for_article(article)
+    return jsonify({'status': 'success', 'message': 'Analysis regeneration started.'})
+
+@app.route('/api/articles/fetch', methods=['POST'])
+def fetch_new_articles():
+    services.run_fetch_and_process_job()
+    return jsonify({'status': 'success', 'message': 'New articles fetch job started.'})
+
+@app.route('/api/articles/search', methods=['GET'])
+def search_articles():
+    query = request.args.get('query')
+    if not query:
+        return jsonify({'error': 'Query parameter is required'}), 400
+    
+    search_results = services.ArxivService.search_raw(query)
+    return jsonify(search_results)
+
+@app.route('/api/articles/batch-import', methods=['POST'])
+def batch_import_articles():
+    entry_ids = request.json.get('entry_ids')
+    if not entry_ids:
+        return jsonify({'error': 'entry_ids list is required'}), 400
+    
+    services.batch_import_and_process(entry_ids)
+    return jsonify({'status': 'success', 'message': 'Batch import job started.'})
+
+@app.route('/api/keywords', methods=['GET', 'POST'])
+def manage_keywords():
+    if request.method == 'POST':
+        keyword_text = request.json.get('keyword')
+        if keyword_text and not Keyword.query.filter_by(keyword=keyword_text).first():
+            new_keyword = Keyword(keyword=keyword_text)
+            db.session.add(new_keyword)
+            db.session.commit()
+    
+    keywords = Keyword.query.all()
+    return jsonify([k.keyword for k in keywords])
+
+@app.route('/api/keywords/<string:keyword_text>', methods=['DELETE'])
+def delete_keyword(keyword_text):
+    keyword = Keyword.query.filter_by(keyword=keyword_text).first()
+    if keyword:
+        db.session.delete(keyword)
+        db.session.commit()
+    return jsonify({'success': True})
+
+@app.route('/')
+def index():
+    return send_from_directory('static', 'index.html')
+
+if __name__ == '__main__':
+    with app.app_context():
+        init_database()
+    scheduler.start_scheduler(app)
+    app.run(host='0.0.0.0', port=5006)
