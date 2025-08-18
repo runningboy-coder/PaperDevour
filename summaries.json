@@ -1,0 +1,73 @@
+[
+    {
+        "title": "Exceptional flat bands in bipartite non-Hermitian quantum crystals",
+        "authors": [
+            "Juan Pablo Esparza",
+            "Vladimir Juricic"
+        ],
+        "published": "2025-08-14",
+        "id": "http://arxiv.org/abs/2508.10901v1",
+        "pdf_url": "http://arxiv.org/pdf/2508.10901v1",
+        "original_summary": "Flat bands, in which kinetic energy is quenched and quantum states become\nmacroscopically degenerate, host a rich variety of correlated and topological\nphases, from unconventional superconductors to fractional Chern insulators. In\nHermitian lattices, their formation mechanisms are now well understood, but\nwhether such states persist, and acquire new features in non-Hermitian (NH)\nquantum crystals, relevant to open and driven systems, has remained an open\nquestion. Here we show that the Hermitian principle for flat-band formation in\nbipartite lattices, based on a sublattice degeneracy mismatch, extends directly\nto the NH regime: whenever one sublattice hosts a momentum-independent\neigenvalue with degeneracy exceeding that of its partner on the other\nsublattice, flat bands arise regardless of gain, loss, or complex couplings.\nStrikingly, at exceptional points, dispersive bands coalesce to form\n\\emph{exceptional flat bands} that persist beyond these singularities,\nexhibiting biorthogonal eigenmodes spanning both sublattices, with energies and\nlifetimes tunable via sublattice asymmetry and non-reciprocal couplings. This\ngeneral framework unifies Hermitian and NH flat-band constructions, and reveals\ndispersionless states with no closed-system analogue. The proposed construction\nis applicable to synthetic platforms, from classical metamaterials, where flat\nbands can be directly emulated, to quantum-engineered systems such as photonic\ncrystals and ultracold atom arrays, which should host correlated and\ntopological phases emerging from such exceptional flat bands.",
+        "ai_analysis": {
+            "simplified_summary_zh": "本文研究了在非厄米特（NH）量子晶体中平带的形成机制，这些晶体与开放和驱动系统相关。研究发现，厄米特体系中基于子晶格简并失配的平带形成原理可以直接扩展到NH体系：当一个子晶格拥有动量无关的特征值且其简并度超过另一子晶格时，无论增益、损耗或复杂耦合如何，都会产生平带。特别是在异常点，色散带合并形成异常平带，这些平带在超出这些奇点后仍然存在，表现出跨越两个子晶格的双正交本征模式，其能量和寿命可通过子晶格不对称性和非互易耦合进行调节。这一框架统一了厄米特和NH平带的构建，并揭示了无闭合系统类似物的无色散态。",
+            "keywords_en": [
+                "flat bands",
+                "non-Hermitian quantum crystals",
+                "exceptional points",
+                "correlated phases",
+                "topological phases"
+            ],
+            "innovation_rating": 5
+        },
+        "local_path": "/Volumes/马学龙/arxiv_paper/2025-08-14 - Exceptional flat bands in bipartite non-Hermitian quantum crystals"
+    },
+    {
+        "title": "Web-Halo Model (WHM): Accurate non-linear matter power spectrum predictions without free parameters",
+        "authors": [
+            "Samuel Brieden",
+            "Florian Beutler",
+            "Marcos Pellejero-Ibañez"
+        ],
+        "published": "2025-08-14",
+        "id": "http://arxiv.org/abs/2508.10902v1",
+        "pdf_url": "http://arxiv.org/pdf/2508.10902v1",
+        "original_summary": "We present a parameter-free variant of the halo model that significantly\nimproves the precision of matter clustering predictions, particularly in the\nchallenging 1-halo to 2-halo transition regime, where standard halo models\noften fail. Unlike HMcode-2020, which relies on 12 phenomenological parameters,\nour approach achieves comparable or superior accuracy without any free fitting\nparameters. This new web-halo model (WHM) extends the traditional halo model by\nincorporating structures that have collapsed along two dimensions (filaments)\nand one dimension (sheets), in addition to haloes, and combines these with\n1-loop Lagrangian Perturbation Theory (1$\\ell$-LPT) in a consistent framework.\nWe show that WHM matches N-body simulation power spectra within the precision\nof state-of-the-art emulators at the 2-halo to 1-halo transition regime at all\nredshifts. Specifically, the WHM achieves better than 2\\% accuracy up to scales\nof $k = 0.4\\, h\\,\\mathrm{Mpc}^{-1}$, $0.7\\, h\\,\\mathrm{Mpc}^{-1}$, and $1.3\\,\nh\\,\\mathrm{Mpc}^{-1}$ at redshifts $z = 0.0$, $0.8$, and $1.5$, respectively,\nfor both the baccoemu and EuclidEmu2 emulators, across their full\n$w_0w_a\\mathrm{CDM} + \\sum m_\\nu$ cosmological parameter space. This marks a\nsubstantial improvement over 1$\\ell$-LPT and HMcode-2020, the latter of which\nperforms similarly at low redshift but deteriorates at higher redshifts despite\nits 12 tuned parameters. We publicly release WHM as WHMcode, integrated into\nexisting HMcode implementations for CAMB and CLASS.",
+        "ai_analysis": {
+            "simplified_summary_zh": "本文提出了一种无参数的晕模型变体，显著提高了物质聚类预测的精度，特别是在标准晕模型常常失效的1-晕到2-晕过渡区域。与依赖12个现象学参数的HMcode-2020不同，我们的方法在没有自由拟合参数的情况下实现了相当或更优的准确性。这种新的网络-晕模型（WHM）通过将沿两个维度（细丝）和一个维度（薄片）坍塌的结构与晕结合，并在一个一致的框架内与1环拉格朗日扰动理论（1ℓ-LPT）结合，扩展了传统的晕模型。WHM在所有红移的2-晕到1-晕过渡区域内，与N体模拟功率谱的匹配精度达到了最先进仿真器的水平。具体而言，WHM在红移z=0.0、0.8和1.5时，对于baccoemu和EuclidEmu2仿真器，在其完整的w0waCDM + ∑mν宇宙学参数空间内，分别达到了k=0.4hMpc−1、0.7hMpc−1和1.3hMpc−1尺度上优于2%的精度。这标志着对1ℓ-LPT和HMcode-2020的显著改进，后者尽管有12个调谐参数，但在高红移时性能下降。我们将WHM作为WHMcode公开发布，并集成到现有的CAMB和CLASS的HMcode实现中。",
+            "keywords_en": [
+                "halo model",
+                "matter clustering",
+                "cosmological simulations",
+                "perturbation theory",
+                "parameter-free"
+            ],
+            "innovation_rating": 5
+        },
+        "local_path": "/Volumes/马学龙/arxiv_paper/2025-08-14 - Web-Halo Model (WHM) Accurate non-linear matter power spectrum predictions witho"
+    },
+    {
+        "title": "Quantum Visual Fields with Neural Amplitude Encoding",
+        "authors": [
+            "Shuteng Wang",
+            "Christian Theobalt",
+            "Vladislav Golyanik"
+        ],
+        "published": "2025-08-14",
+        "id": "http://arxiv.org/abs/2508.10900v1",
+        "pdf_url": "http://arxiv.org/pdf/2508.10900v1",
+        "original_summary": "Quantum Implicit Neural Representations (QINRs) include components for\nlearning and execution on gate-based quantum computers. While QINRs recently\nemerged as a promising new paradigm, many challenges concerning their\narchitecture and ansatz design, the utility of quantum-mechanical properties,\ntraining efficiency and the interplay with classical modules remain. This paper\nadvances the field by introducing a new type of QINR for 2D image and 3D\ngeometric field learning, which we collectively refer to as Quantum Visual\nField (QVF). QVF encodes classical data into quantum statevectors using neural\namplitude encoding grounded in a learnable energy manifold, ensuring meaningful\nHilbert space embeddings. Our ansatz follows a fully entangled design of\nlearnable parametrised quantum circuits, with quantum (unitary) operations\nperformed in the real Hilbert space, resulting in numerically stable training\nwith fast convergence. QVF does not rely on classical post-processing -- in\ncontrast to the previous QINR learning approach -- and directly employs\nprojective measurement to extract learned signals encoded in the ansatz.\nExperiments on a quantum hardware simulator demonstrate that QVF outperforms\nthe existing quantum approach and widely used classical foundational baselines\nin terms of visual representation accuracy across various metrics and model\ncharacteristics, such as learning of high-frequency details. We also show\napplications of QVF in 2D and 3D field completion and 3D shape interpolation,\nhighlighting its practical potential.",
+        "ai_analysis": {
+            "simplified_summary_zh": "本文介绍了量子隐式神经表示（QINRs）的新类型——量子视觉场（QVF），用于2D图像和3D几何场学习。QVF通过基于可学习能量流形的神经振幅编码将经典数据编码到量子态向量中，确保有意义的希尔伯特空间嵌入。其设计采用全纠缠的可学习参数化量子电路，在实希尔伯特空间中执行量子（幺正）操作，实现了数值稳定的训练和快速收敛。与之前的QINR学习方法不同，QVF不依赖经典后处理，直接利用投影测量提取编码在ansatz中的学习信号。在量子硬件模拟器上的实验表明，QVF在视觉表示准确性方面优于现有的量子方法和广泛使用的经典基线，特别是在学习高频细节方面。此外，QVF在2D和3D场完成以及3D形状插值中的应用展示了其实际潜力。",
+            "keywords_en": [
+                "Quantum Implicit Neural Representations",
+                "Quantum Visual Field",
+                "Hilbert space embeddings",
+                "quantum hardware simulator",
+                "visual representation accuracy"
+            ],
+            "innovation_rating": 4
+        },
+        "local_path": "/Volumes/马学龙/arxiv_paper/2025-08-14 - Quantum Visual Fields with Neural Amplitude Encoding"
+    }
+]
