@@ -9,10 +9,10 @@
 </p>
 
 <p align="center">
-  <img alt="GitHub stars" src="https://img.shields.io/github/stars/[YOUR GITHUB USERNAME]/PaperDevour?style=for-the-badge">
-  <img alt="GitHub forks" src="https://img.shields.io/github/forks/[YOUR GITHUB USERNAME]/PaperDevour?style=for-the-badge">
-  <img alt="GitHub issues" src="https://img.shields.io/github/issues/[YOUR GITHUB USERNAME]/PaperDevour?style=for-the-badge&color=success">
-  <img alt="License" src="https://img.shields.io/github/license/[YOUR GITHUB USERNAME]/PaperDevour?style=for-the-badge&color=blue">
+  <img alt="GitHub stars" src="https://img.shields.io/github/stars/runingboy-coder/PaperDevour?style=for-the-badge">
+  <img alt="GitHub forks" src="https://img.shields.io/github/forks/runingboy-coder/PaperDevour?style=for-the-badge">
+  <img alt="GitHub issues" src="https://img.shields.io/github/issues/runingboy-coder/PaperDevour?style=for-the-badge&color=success">
+  <img alt="License" src="https://img.shields.io/github/license/runingboy-coder/PaperDevour?style=for-the-badge&color=blue">
 </p>
 
 ---
@@ -49,7 +49,7 @@ PaperDevour 不仅仅是一个论文下载器，它是一个智能化的工作�
 
 1.  **克隆仓库**
     ```bash
-    git clone [https://github.com/](https://github.com/)[YOUR GITHUB USERNAME]/PaperDevour.git
+    git clone https://github.com/runningboy-coder/PaperDevour.git
     cd PaperDevour
     ```
 
