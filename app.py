@@ -1,4 +1,4 @@
-# app.py - 主應用入口
+# app.py - 主应用入口
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from database import db, init_database
@@ -6,24 +6,24 @@ from models import Keyword, Author, Article, Analysis
 import services
 import scheduler
 
-# --- Flask 應用設置 ---
+# --- Flask 应用设置 ---
 app = Flask(__name__, static_folder='static')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///research_assistant.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# 初始化資料庫和 CORS
+# 初始化资料库和 CORS
 db.init_app(app)
 CORS(app)
 
 # --- API 路由 ---
 
-# 獲取所有文章，包含簡易分析
+# 获取所有文章，包含简易分析
 @app.route('/api/articles')
 def get_articles():
     articles = Article.query.order_by(Article.published.desc()).all()
     results = []
     for article in articles:
-        # 只獲取簡易分析用於列表展示
+        # 只获取简易分析用于列表展示
         simple_analysis = Analysis.query.filter_by(article_id=article.id, analysis_type='summary').first()
         results.append({
             'id': article.id,
@@ -34,7 +34,7 @@ def get_articles():
         })
     return jsonify(results)
 
-# 獲取單篇文章的詳細信息和所有分析
+# 获取单篇文章的详细信息和所有分析
 @app.route('/api/articles/<int:article_id>')
 def get_article_details(article_id):
     article = Article.query.get_or_404(article_id)
@@ -52,7 +52,7 @@ def get_article_details(article_id):
         'detailed_analysis': detailed.content if detailed else None,
     })
 
-# 對文章進行提問
+# 对文章进行提问
 @app.route('/api/articles/<int:article_id>/ask', methods=['POST'])
 def ask_question(article_id):
     article = Article.query.get_or_404(article_id)
@@ -60,15 +60,40 @@ def ask_question(article_id):
     if not question:
         return jsonify({'error': 'Question is required'}), 400
     
-    # 結合原文摘要和詳細分析作為上下文
     detailed_analysis = Analysis.query.filter_by(article_id=article.id, analysis_type='detailed').first()
     context = f"Original Abstract: {article.original_summary}\n\nDetailed Analysis: {detailed_analysis.content if detailed_analysis else ''}"
     
     answer = services.AnalysisService.ask_question_with_context(question, context)
     return jsonify({'answer': answer})
 
+# *** 新增功能 ***: 手动触发根据已存关键字抓取
+@app.route('/api/articles/fetch', methods=['POST'])
+def fetch_new_articles():
+    services.run_fetch_and_process_job()
+    return jsonify({'status': 'success', 'message': 'New articles fetch job started.'})
 
-# 關鍵字管理
+# *** 新增功能 ***: 根据特定关键字即时搜索
+@app.route('/api/articles/search', methods=['GET'])
+def search_articles():
+    query = request.args.get('query')
+    if not query:
+        return jsonify({'error': 'Query parameter is required'}), 400
+    
+    search_results = services.ArxivService.search_raw(query)
+    return jsonify(search_results)
+
+# *** 新增功能 ***: 批量导入并分析选中的文章
+@app.route('/api/articles/batch-import', methods=['POST'])
+def batch_import_articles():
+    entry_ids = request.json.get('entry_ids')
+    if not entry_ids:
+        return jsonify({'error': 'entry_ids list is required'}), 400
+    
+    services.batch_import_and_process(entry_ids)
+    return jsonify({'status': 'success', 'message': 'Batch import job started.'})
+
+
+# 关键字管理
 @app.route('/api/keywords', methods=['GET', 'POST'])
 def manage_keywords():
     if request.method == 'POST':
@@ -89,23 +114,19 @@ def delete_keyword(keyword_text):
         db.session.commit()
     return jsonify({'success': True})
 
-# 作者管理 (與關鍵字類似)
-# ... 可以在此處添加作者管理的 API ...
 
 @app.route('/')
 def index():
     return send_from_directory('static', 'index.html')
 
 if __name__ == '__main__':
-    # *** 已修正 ***: 在啟動應用前，確保資料庫和表已創建
     with app.app_context():
         init_database()
 
-    # 啟動定時任務
     scheduler.start_scheduler(app)
     
-    # 首次啟動時，運行一次任務
-    with app.app_context():
-        services.run_fetch_and_process_job()
+    # 首次启动时不再自动运行，等待用户手动触发
+    # with app.app_context():
+    #     services.run_fetch_and_process_job()
     
     app.run(host='0.0.0.0', port=5006)

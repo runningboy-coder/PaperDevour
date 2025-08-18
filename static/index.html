@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 研究伙伴</title>
+    <title>PaperDevour</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -17,6 +17,7 @@
         
         .article-item.active { background-color: #1e293b; border-right-color: #38bdf8; } /* bg-slate-800, border-sky-400 */
         .tab.active { border-bottom-color: #38bdf8; color: #38bdf8; }
+        .modal-content { max-height: 80vh; }
     </style>
 </head>
 <body class="flex flex-col h-screen">
@@ -25,27 +26,40 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M16.89 15.54c.34-.34.34-.89 0-1.23l-1.88-1.88a.87.87 0 0 0-1.23 0l-1.88 1.88a.87.87 0 0 0 0 1.23l1.88 1.88c.34.34.89.34 1.23 0zM12 14.12l1.29-1.29a.87.87 0 0 0 0-1.23L12 10.31l-1.29 1.29a.87.87 0 0 0 0 1.23zm-1.54-5.63c.34-.34.89-.34 1.23 0l1.88 1.88a.87.87 0 0 0 1.23 0l1.88-1.88a.87.87 0 0 0 0-1.23l-1.88-1.88a.87.87 0 0 0-1.23 0L12 7.12l-1.29-1.29a.87.87 0 0 0-1.23 0l-1.88 1.88a.87.87 0 0 0 0 1.23l1.88 1.88c.34.34.89.34 1.23 0zm-5.63 1.54c.34-.34.34-.89 0-1.23L3.54 7.51a.87.87 0 0 0-1.23 0L.43 9.39a.87.87 0 0 0 0 1.23l1.88 1.88c.34.34.89.34 1.23 0zM12 23.57a.87.87 0 0 0 .62-.26l1.88-1.88a.87.87 0 0 0 0-1.23l-1.88-1.88a.87.87 0 0 0-1.23 0l-1.88 1.88a.87.87 0 0 0 0 1.23l1.88 1.88c.17.17.4.26.62.26"/></svg>
-                <h1 class="text-xl font-bold text-slate-100">AI 研究伙伴</h1>
+                <h1 class="text-xl font-bold text-slate-100">PaperDevour</h1>
             </div>
-            <button id="settings-btn" class="text-slate-400 hover:text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            </button>
+            <div class="flex items-center space-x-4">
+                <button id="fetch-now-btn" title="根据预设关键词获取最新文章" class="text-slate-400 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 1-9 9H3.5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9a9 9 0 0 1 9 9Z"/><path d="M16 12H8"/><path d="m12 16-4-4 4-4"/></svg>
+                </button>
+                <button id="settings-btn" class="text-slate-400 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </button>
+            </div>
         </div>
     </header>
 
     <div class="flex-grow flex overflow-hidden">
-        <!-- Left Panel: Article List -->
+        <!-- Left Panel -->
         <aside class="w-1/3 xl:w-1/4 bg-slate-800/50 border-r border-slate-700 flex flex-col">
-            <div class="p-4 border-b border-slate-700"><h2 class="font-semibold text-lg text-slate-100">已收集文章</h2></div>
+            <div class="p-4 border-b border-slate-700">
+                <div class="relative">
+                    <input type="search" id="search-input" placeholder="搜索文章..." class="w-full bg-slate-900 border border-slate-600 rounded-md p-2 pl-10 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
+            </div>
             <ul id="article-list" class="overflow-y-auto flex-grow">
-                 <li class="p-4 text-center text-slate-400">正在加载文章列表...</li>
+                <li class="p-4 text-center text-slate-400">正在加载文章列表...</li>
             </ul>
         </aside>
 
-        <!-- Right Panel: Details -->
+        <!-- Right Panel -->
         <main class="w-2/3 xl:w-3/4 flex flex-col overflow-hidden">
             <div id="detail-placeholder" class="flex items-center justify-center h-full text-center">
-                <div><p class="text-slate-500">请从左侧列表选择一篇文章</p></div>
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-slate-600 mb-4"><path d="m12 3-9 9 9 9 9-9Z"/><path d="M3 12h18"/><path d="m12 3 9 9-9 9-9-9Z"/></svg>
+                    <p class="text-slate-500">请从左侧列表选择一篇文章</p>
+                </div>
             </div>
             <div id="detail-view" class="hidden flex-grow flex flex-col">
                 <!-- Tabs -->
@@ -64,7 +78,7 @@
         </main>
     </div>
 
-    <!-- Settings Modal -->
+    <!-- Modals -->
     <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50">
         <div class="bg-slate-800 border border-slate-700 rounded-lg shadow-xl w-full max-w-md">
             <div class="p-4 border-b border-slate-700 flex justify-between items-center">
@@ -83,7 +97,20 @@
             </div>
         </div>
     </div>
-
+    <div id="search-results-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50">
+        <div class="bg-slate-800 border border-slate-700 rounded-lg shadow-xl w-full max-w-4xl flex flex-col">
+            <div class="p-4 border-b border-slate-700 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-slate-100">搜索结果</h3>
+                <button id="close-search-modal-btn" class="text-slate-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div id="search-results-list" class="p-6 overflow-y-auto modal-content"></div>
+            <div class="p-4 border-t border-slate-700 flex justify-end items-center space-x-4">
+                <span id="selection-counter" class="text-sm text-slate-400">已选择 0 篇</span>
+                <button id="batch-import-btn" class="bg-sky-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-500 disabled:bg-slate-600 disabled:cursor-not-allowed">导入并分析</button>
+            </div>
+        </div>
+    </div>
+    
     <script>
     // --- App State ---
     let articlesData = [];
@@ -102,38 +129,51 @@
     const keywordsListEl = document.getElementById('keywords-list');
     const newKeywordInput = document.getElementById('new-keyword-input');
     const addKeywordBtn = document.getElementById('add-keyword-btn');
+    const searchInput = document.getElementById('search-input');
+    const fetchNowBtn = document.getElementById('fetch-now-btn');
+    const searchResultsModal = document.getElementById('search-results-modal');
+    const closeSearchModalBtn = document.getElementById('close-search-modal-btn');
+    const searchResultsList = document.getElementById('search-results-list');
+    const selectionCounter = document.getElementById('selection-counter');
+    const batchImportBtn = document.getElementById('batch-import-btn');
 
     // --- API Functions ---
-    async function fetchKeywords() {
-        const response = await fetch(`${API_BASE_URL}/api/keywords`);
-        return response.json();
+    async function fetchApi(url, options = {}) {
+        try {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        } catch (error) {
+            console.error(`Fetch error for ${url}:`, error);
+            throw error;
+        }
     }
-    async function addKeyword(keyword) {
-        await fetch(`${API_BASE_URL}/api/keywords`, {
+
+    const api = {
+        getKeywords: () => fetchApi(`${API_BASE_URL}/api/keywords`),
+        addKeyword: (keyword) => fetchApi(`${API_BASE_URL}/api/keywords`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({keyword})
-        });
-    }
-    async function deleteKeyword(keyword) {
-        await fetch(`${API_BASE_URL}/api/keywords/${keyword}`, { method: 'DELETE' });
-    }
-    async function fetchArticles() {
-        const response = await fetch(`${API_BASE_URL}/api/articles`);
-        articlesData = await response.json();
-    }
-    async function fetchArticleDetails(id) {
-        const response = await fetch(`${API_BASE_URL}/api/articles/${id}`);
-        return response.json();
-    }
-    async function postQuestion(id, question) {
-        const response = await fetch(`${API_BASE_URL}/api/articles/${id}/ask`, {
+        }),
+        deleteKeyword: (keyword) => fetchApi(`${API_BASE_URL}/api/keywords/${keyword}`, { method: 'DELETE' }),
+        getArticles: () => fetchApi(`${API_BASE_URL}/api/articles`),
+        getArticleDetails: (id) => fetchApi(`${API_BASE_URL}/api/articles/${id}`),
+        postQuestion: (id, question) => fetchApi(`${API_BASE_URL}/api/articles/${id}/ask`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({question})
-        });
-        return response.json();
-    }
+        }),
+        fetchOnDemand: () => fetchApi(`${API_BASE_URL}/api/articles/fetch`, { method: 'POST' }),
+        searchArticles: (query) => fetchApi(`${API_BASE_URL}/api/articles/search?query=${encodeURIComponent(query)}`),
+        batchImport: (entry_ids) => fetchApi(`${API_BASE_URL}/api/articles/batch-import`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({entry_ids})
+        })
+    };
 
     // --- Render Functions ---
     function renderKeywords(keywords) {
@@ -142,7 +182,7 @@
                 ${kw}
                 <button data-keyword="${kw}" class="delete-keyword-btn ml-2 text-slate-400 hover:text-red-400">&times;</button>
             </span>
-        `).join('');
+        `).join('') || '<p class="text-sm text-slate-400">暂无关键词</p>';
     }
 
     function renderArticleList() {
@@ -166,7 +206,7 @@
 
     async function renderDetailView(id) {
         currentArticleId = id;
-        const article = await fetchArticleDetails(id);
+        const article = await api.getArticleDetails(id);
         
         detailPlaceholderEl.classList.add('hidden');
         detailViewEl.classList.remove('hidden');
@@ -180,8 +220,10 @@
 
     function renderTabContent(article) {
         let content = '';
+        const summary = article.summary_analysis || {};
+        const detailed = article.detailed_analysis || {};
+
         if (currentTab === 'summary') {
-            const summary = article.summary_analysis || {};
             content = `
                 <h1 class="text-2xl font-bold text-slate-100 mb-2">${article.title}</h1>
                 <p class="text-slate-400 mb-6">${article.authors.join(', ')}</p>
@@ -189,14 +231,13 @@
                     <p class="text-slate-300 leading-relaxed">${summary.simplified_summary_zh || '无摘要'}</p>
                 </div>`;
         } else if (currentTab === 'detailed') {
-            const detailed = article.detailed_analysis || {};
             content = `
                 <h1 class="text-2xl font-bold text-slate-100 mb-6">${article.title}</h1>
                 <div class="space-y-6 text-slate-300">
-                    <div><h3 class="font-semibold text-lg text-sky-400 mb-2">研究背景</h3><p>${detailed.background || ''}</p></div>
-                    <div><h3 class="font-semibold text-lg text-sky-400 mb-2">使用方法</h3><p>${detailed.methodology || ''}</p></div>
-                    <div><h3 class="font-semibold text-lg text-sky-400 mb-2">核心创新点</h3><ul class="list-disc list-inside space-y-1">${(detailed.key_innovations || []).map(i => `<li>${i}</li>`).join('')}</ul></div>
-                    <div><h3 class="font-semibold text-lg text-sky-400 mb-2">潜在影响</h3><p>${detailed.potential_impact || ''}</p></div>
+                    <div><h3 class="font-semibold text-lg text-sky-400 mb-2">研究背景</h3><p>${detailed.background || '无'}</p></div>
+                    <div><h3 class="font-semibold text-lg text-sky-400 mb-2">使用方法</h3><p>${detailed.methodology || '无'}</p></div>
+                    <div><h3 class="font-semibold text-lg text-sky-400 mb-2">核心创新点</h3><ul class="list-disc list-inside space-y-1">${(detailed.key_innovations || []).map(i => `<li>${i}</li>`).join('') || '无'}</ul></div>
+                    <div><h3 class="font-semibold text-lg text-sky-400 mb-2">潜在影响</h3><p>${detailed.potential_impact || '无'}</p></div>
                 </div>`;
         } else if (currentTab === 'qna') {
             content = `
@@ -209,14 +250,34 @@
         }
         detailContentEl.innerHTML = content;
     }
+    
+    function renderSearchResults(results) {
+        if (results.length === 0) {
+            searchResultsList.innerHTML = '<p class="text-slate-400 text-center">未找到相关文章。</p>';
+            return;
+        }
+        searchResultsList.innerHTML = results.map(r => `
+            <div class="p-4 border-b border-slate-700">
+                <div class="flex items-start">
+                    <input type="checkbox" data-id="${r.entry_id}" class="mt-1.5 mr-4 bg-slate-900 border-slate-600 text-sky-500 focus:ring-sky-500" ${r.is_imported ? 'disabled' : ''}>
+                    <div class="flex-grow">
+                        <h4 class="font-semibold text-slate-200">${r.title}</h4>
+                        <p class="text-sm text-slate-400 mt-1">${r.authors.join(', ')}</p>
+                        <p class="text-sm text-slate-400 mt-2">${r.summary.substring(0, 200)}...</p>
+                        ${r.is_imported ? '<span class="text-xs text-green-400 mt-2 inline-block">已导入</span>' : ''}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
 
     // --- Event Handlers ---
     async function handleKeywordAdd() {
         const newKeyword = newKeywordInput.value.trim();
         if (newKeyword) {
-            await addKeyword(newKeyword);
+            await api.addKeyword(newKeyword);
             newKeywordInput.value = '';
-            const keywords = await fetchKeywords();
+            const keywords = await api.getKeywords();
             renderKeywords(keywords);
         }
     }
@@ -224,8 +285,8 @@
     async function handleKeywordDelete(e) {
         if (e.target.classList.contains('delete-keyword-btn')) {
             const keyword = e.target.dataset.keyword;
-            await deleteKeyword(keyword);
-            const keywords = await fetchKeywords();
+            await api.deleteKeyword(keyword);
+            const keywords = await api.getKeywords();
             renderKeywords(keywords);
         }
     }
@@ -233,52 +294,53 @@
     async function handleQnaSubmit() {
         const input = document.getElementById('qna-input');
         const question = input.value.trim();
-        if (!question) return;
+        if (!question || !currentArticleId) return;
         
         const historyEl = document.getElementById('qna-history');
         historyEl.innerHTML += `<div class="text-right"><span class="bg-sky-600 text-white p-2 rounded-lg inline-block">${question}</span></div>`;
         input.value = '';
         input.disabled = true;
         
-        const result = await postQuestion(currentArticleId, question);
+        const result = await api.postQuestion(currentArticleId, question);
         historyEl.innerHTML += `<div><span class="bg-slate-700 text-slate-200 p-2 rounded-lg inline-block">${result.answer}</span></div>`;
         input.disabled = false;
         input.focus();
+    }
+    
+    async function handleSearch(e) {
+        if (e.key === 'Enter') {
+            const query = searchInput.value.trim();
+            if (!query) return;
+            searchResultsList.innerHTML = '<p class="text-slate-400 text-center">正在搜索...</p>';
+            searchResultsModal.classList.remove('hidden');
+            searchResultsModal.classList.add('flex');
+            const results = await api.searchArticles(query);
+            renderSearchResults(results);
+        }
+    }
+
+    async function handleBatchImport() {
+        const selectedIds = Array.from(searchResultsList.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.dataset.id);
+        if (selectedIds.length === 0) return;
+        
+        batchImportBtn.disabled = true;
+        batchImportBtn.textContent = '正在导入...';
+        
+        await api.batchImport(selectedIds);
+        
+        searchResultsModal.classList.add('hidden');
+        batchImportBtn.disabled = false;
+        batchImportBtn.textContent = '导入并分析';
+        
+        await initialize();
     }
 
     // --- Initialization ---
     async function initialize() {
         try {
-            await fetchArticles();
+            await api.getArticles();
+            articlesData = await api.getArticles();
             renderArticleList();
-
-            settingsBtn.addEventListener('click', async () => {
-                const keywords = await fetchKeywords();
-                renderKeywords(keywords);
-                settingsModal.classList.remove('hidden');
-                settingsModal.classList.add('flex');
-            });
-            closeModalBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
-            addKeywordBtn.addEventListener('click', handleKeywordAdd);
-            keywordsListEl.addEventListener('click', handleKeywordDelete);
-            
-            articleListEl.addEventListener('click', (e) => {
-                const item = e.target.closest('.article-item');
-                if (item) renderDetailView(parseInt(item.dataset.id));
-            });
-
-            detailViewEl.addEventListener('click', async (e) => {
-                if (e.target.matches('.tab')) {
-                    currentTab = e.target.dataset.tab;
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    e.target.classList.add('active');
-                    const article = await fetchArticleDetails(currentArticleId);
-                    renderTabContent(article);
-                }
-                if (e.target.id === 'qna-submit-btn') {
-                    handleQnaSubmit();
-                }
-            });
             
             if (articlesData.length > 0) {
                 renderDetailView(articlesData[0].id);
@@ -290,7 +352,52 @@
         }
     }
 
-    initialize();
+    // --- Event Listeners Setup ---
+    settingsBtn.addEventListener('click', async () => {
+        const keywords = await api.getKeywords();
+        renderKeywords(keywords);
+        settingsModal.classList.remove('hidden');
+        settingsModal.classList.add('flex');
+    });
+    closeModalBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+    addKeywordBtn.addEventListener('click', handleKeywordAdd);
+    keywordsListEl.addEventListener('click', handleKeywordDelete);
+    
+    articleListEl.addEventListener('click', (e) => {
+        const item = e.target.closest('.article-item');
+        if (item) renderDetailView(parseInt(item.dataset.id));
+    });
+
+    detailViewEl.addEventListener('click', async (e) => {
+        if (e.target.matches('.tab')) {
+            currentTab = e.target.dataset.tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            e.target.classList.add('active');
+            if (currentArticleId) {
+                const article = await api.getArticleDetails(currentArticleId);
+                renderTabContent(article);
+            }
+        }
+        if (e.target.id === 'qna-submit-btn') {
+            handleQnaSubmit();
+        }
+    });
+
+    fetchNowBtn.addEventListener('click', async () => {
+        alert('已开始在后台获取最新文章，完成后将自动刷新列表。');
+        await api.fetchOnDemand();
+        await initialize();
+    });
+    searchInput.addEventListener('keyup', handleSearch);
+    closeSearchModalBtn.addEventListener('click', () => searchResultsModal.classList.add('hidden'));
+    batchImportBtn.addEventListener('click', handleBatchImport);
+    searchResultsList.addEventListener('change', () => {
+        const count = searchResultsList.querySelectorAll('input[type="checkbox"]:checked').length;
+        selectionCounter.textContent = `已选择 ${count} 篇`;
+        batchImportBtn.disabled = count === 0;
+    });
+
+    document.addEventListener('DOMContentLoaded', initialize);
     </script>
 </body>
 </html>
