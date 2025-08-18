@@ -1,4 +1,4 @@
-# PaperDevour 论文吞噬者
+# PaperDevour 吞文研究助手
 
 <p align="center">
   <img src="https://placehold.co/600x300/0f172a/38bdf8?text=PaperDevour&font=raleway" alt="PaperDevour Banner">
