@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtualenv
+.env
+venv/
+ENV/
+
+# Database
+research_assistant.db
+*.sqlite3
+
+# IDE and OS files
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db

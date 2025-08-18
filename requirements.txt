@@ -5,3 +5,4 @@ APScheduler
 arxiv
 openai
 requests
+python-dotenv

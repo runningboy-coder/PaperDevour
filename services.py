@@ -6,14 +6,19 @@ import json
 from datetime import datetime
 from openai import OpenAI
 from models import db, Keyword, Author, Article, Analysis
+from dotenv import load_dotenv
+
+# 加载 .env 文件中的环境变量
+load_dotenv()
 
 # --- 配置 ---
-DEEPSEEK_API_KEY = "sk-e08adb457e13469bbc2bc931a15dca44"  # 替换为你的 DeepSeek API 密钥
-SAVE_PATH = "Volumes/马学龙/arxiv_papers"  # 存储下载的论文的路径
+# 从环境变量中读取 API Key，如果找不到则为空字符串
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+SAVE_PATH = "path/to/your/nextcloud/folder"
 MAX_RESULTS = 5
-SEARCH_MAX_RESULTS = 20 # 搜索時返回更多結果供選擇
+SEARCH_MAX_RESULTS = 20 # 搜索时返回更多结果供选择
 
-# --- Prompt 設計 ---
+# --- Prompt 设计 ---
 SUMMARY_PROMPT = """
 Please analyze the following academic paper abstract and provide a structured summary in JSON format.
 The JSON object must contain these keys:
@@ -24,7 +29,7 @@ Abstract:
 """
 
 DETAILED_PROMPT = """
-Please provide a detailed analysis of the following academic paper abstract in JSON format in simplified Chinese. 
+Please provide a detailed analysis of the following academic paper abstract in JSON format in simple Chinese.
 The JSON object must contain these keys:
 - "background": A brief introduction to the research area and the problem it addresses.
 - "methodology": A description of the methods or techniques used in the paper.
@@ -44,6 +49,10 @@ Answer:
 """
 
 class AnalysisService:
+    # 检查 API Key 是否已配置
+    if not DEEPSEEK_API_KEY:
+        raise ValueError("DEEPSEEK_API_KEY not found in .env file. Please configure it.")
+    
     client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url="https://api.deepseek.com/v1")
 
     @classmethod
