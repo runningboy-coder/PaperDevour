@@ -5,14 +5,14 @@
 </p>
 
 <p align="center">
-  <strong>一款为你 7x24 小时工作的 AI 研究伙伴，自动追踪、深度解析并与你探讨前沿学术论文。</strong>
+  <strong>一款为你 7x24 小时工作的 AI 研究助手，自动追踪、深度解析并与你探讨前沿学术论文。</strong>
 </p>
 
 <p align="center">
-  <img alt="GitHub stars" src="https://img.shields.io/github/stars/runingboy-coder/PaperDevour?style=for-the-badge">
-  <img alt="GitHub forks" src="https://img.shields.io/github/forks/runingboy-coder/PaperDevour?style=for-the-badge">
-  <img alt="GitHub issues" src="https://img.shields.io/github/issues/runingboy-coder/PaperDevour?style=for-the-badge&color=success">
-  <img alt="License" src="https://img.shields.io/github/license/runingboy-coder/PaperDevour?style=for-the-badge&color=blue">
+  <img alt="GitHub stars" src="https://img.shields.io/github/stars/runningboy-coder/PaperDevour?style=for-the-badge">
+  <img alt="GitHub forks" src="https://img.shields.io/github/forks/runningboy-coder/PaperDevour?style=for-the-badge">
+  <img alt="GitHub issues" src="https://img.shields.io/github/issues/runningboy-coder/PaperDevour?style=for-the-badge&color=success">
+  <img alt="License" src="https://img.shields.io/github/license/runningboy-coder/PaperDevour?style=for-the-badge&color=blue">
 </p>
 
 ---
