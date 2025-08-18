@@ -3,199 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 研究助理</title>
+    <title>AI 研究伙伴</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        html, body {
-            height: 100%;
-            overflow: hidden; /* 防止頁面滾動 */
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f1f5f9; /* Slate 100 */
-        }
-        /* 自定義滾動條樣式 */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px;}
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        html, body { height: 100%; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #cbd5e1;} /* bg-slate-900, text-slate-300 */
+        /* 自定义深色滚动条 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; } /* bg-slate-800 */
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px;} /* bg-slate-600 */
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; } /* bg-slate-500 */
         
-        /* 列表項目選中狀態 */
-        .article-item.active {
-            background-color: #e2e8f0; /* Slate 200 */
-            border-right-color: #3b82f6; /* Blue 500 */
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loader {
-            border: 4px solid #e2e8f0;
-            border-top: 4px solid #3b82f6;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
+        .article-item.active { background-color: #1e293b; border-right-color: #38bdf8; } /* bg-slate-800, border-sky-400 */
+        .tab.active { border-bottom-color: #38bdf8; color: #38bdf8; }
     </style>
 </head>
 <body class="flex flex-col h-screen">
 
-    <!-- 頁面頭部 -->
-    <header class="bg-white border-b border-slate-200 flex-shrink-0">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <header class="bg-slate-800/70 backdrop-blur-sm border-b border-slate-700 flex-shrink-0 z-10">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-900"><path d="M12 22h6a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M5.43 12.57a1.5 1.5 0 0 0-2.12-.14l-1.17 1.17a1.5 1.5 0 0 0 0 2.12l1.17 1.17a1.5 1.5 0 0 0 2.12 0l1.17-1.17a1.5 1.5 0 0 0 0-2.12Z"/><path d="m12 18-2.5-2.5"/><path d="m8.5 18 3.5-3.5"/></svg>
-                <h1 class="text-xl font-bold text-slate-900">AI 研究助理</h1>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M16.89 15.54c.34-.34.34-.89 0-1.23l-1.88-1.88a.87.87 0 0 0-1.23 0l-1.88 1.88a.87.87 0 0 0 0 1.23l1.88 1.88c.34.34.89.34 1.23 0zM12 14.12l1.29-1.29a.87.87 0 0 0 0-1.23L12 10.31l-1.29 1.29a.87.87 0 0 0 0 1.23zm-1.54-5.63c.34-.34.89-.34 1.23 0l1.88 1.88a.87.87 0 0 0 1.23 0l1.88-1.88a.87.87 0 0 0 0-1.23l-1.88-1.88a.87.87 0 0 0-1.23 0L12 7.12l-1.29-1.29a.87.87 0 0 0-1.23 0l-1.88 1.88a.87.87 0 0 0 0 1.23l1.88 1.88c.34.34.89.34 1.23 0zm-5.63 1.54c.34-.34.34-.89 0-1.23L3.54 7.51a.87.87 0 0 0-1.23 0L.43 9.39a.87.87 0 0 0 0 1.23l1.88 1.88c.34.34.89.34 1.23 0zM12 23.57a.87.87 0 0 0 .62-.26l1.88-1.88a.87.87 0 0 0 0-1.23l-1.88-1.88a.87.87 0 0 0-1.23 0l-1.88 1.88a.87.87 0 0 0 0 1.23l1.88 1.88c.17.17.4.26.62.26"/></svg>
+                <h1 class="text-xl font-bold text-slate-100">AI 研究伙伴</h1>
             </div>
+            <button id="settings-btn" class="text-slate-400 hover:text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </button>
         </div>
     </header>
 
-    <!-- 主內容區域 -->
     <div class="flex-grow flex overflow-hidden">
-        <!-- 左側文章列表 -->
-        <aside id="article-list-panel" class="w-1/3 xl:w-1/4 bg-white border-r border-slate-200 flex flex-col">
-            <div class="p-4 border-b border-slate-200 flex-shrink-0">
-                <h2 class="font-semibold text-lg">已收集文章</h2>
-            </div>
-            <div id="loading-list" class="flex items-center justify-center h-full">
-                <p class="text-slate-500">正在加載文章列表...</p>
-            </div>
+        <!-- Left Panel: Article List -->
+        <aside class="w-1/3 xl:w-1/4 bg-slate-800/50 border-r border-slate-700 flex flex-col">
+            <div class="p-4 border-b border-slate-700"><h2 class="font-semibold text-lg text-slate-100">已收集文章</h2></div>
             <ul id="article-list" class="overflow-y-auto flex-grow">
-                <!-- 文章列表項將通過 JS 動態插入 -->
+                 <li class="p-4 text-center text-slate-400">正在加载文章列表...</li>
             </ul>
         </aside>
 
-        <!-- 右側詳細內容 -->
-        <main id="detail-panel" class="w-2/3 xl:w-3/4 bg-slate-50 overflow-y-auto p-6 sm:p-8">
-            <div id="detail-placeholder" class="flex items-center justify-center h-full">
-                <div class="text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-slate-400 mb-4"><path d="m12 3-9 9 9 9 9-9Z"/><path d="M3 12h18"/><path d="m12 3 9 9-9 9-9-9Z"/></svg>
-                    <p class="text-slate-500">請從左側列表選擇一篇文章以查看詳細分析</p>
-                </div>
+        <!-- Right Panel: Details -->
+        <main class="w-2/3 xl:w-3/4 flex flex-col overflow-hidden">
+            <div id="detail-placeholder" class="flex items-center justify-center h-full text-center">
+                <div><p class="text-slate-500">请从左侧列表选择一篇文章</p></div>
             </div>
-            <div id="detail-content" class="hidden">
-                <!-- 文章詳細內容將通過 JS 動態插入 -->
+            <div id="detail-view" class="hidden flex-grow flex flex-col">
+                <!-- Tabs -->
+                <div class="flex-shrink-0 border-b border-slate-700 bg-slate-800/50">
+                    <div class="px-6">
+                        <nav class="flex space-x-6">
+                            <button data-tab="summary" class="tab py-3 px-1 border-b-2 border-transparent text-slate-400 hover:text-white font-medium text-sm">智能摘要</button>
+                            <button data-tab="detailed" class="tab py-3 px-1 border-b-2 border-transparent text-slate-400 hover:text-white font-medium text-sm">深度解析</button>
+                            <button data-tab="qna" class="tab py-3 px-1 border-b-2 border-transparent text-slate-400 hover:text-white font-medium text-sm">论文问答</button>
+                        </nav>
+                    </div>
+                </div>
+                <!-- Content -->
+                <div id="detail-content" class="flex-grow overflow-y-auto p-6 sm:p-8"></div>
             </div>
         </main>
     </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const articleList = document.getElementById('article-list');
-            const loadingList = document.getElementById('loading-list');
-            const detailPlaceholder = document.getElementById('detail-placeholder');
-            const detailContent = document.getElementById('detail-content');
-            
-            let articlesData = []; // 儲存所有文章數據
 
-            // 函數：生成星星評分
-            function renderStars(rating) {
-                let stars = '';
-                const filledStar = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-amber-400"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`;
-                const emptyStar = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-slate-300"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`;
-                for (let i = 1; i <= 5; i++) { stars += i <= rating ? filledStar : emptyStar; }
-                return stars;
-            }
-
-            // 函數：顯示指定文章的詳細內容
-            function displayArticleDetails(articleId) {
-                const article = articlesData.find(a => a.id === articleId);
-                if (!article) return;
-
-                const aiAnalysis = article.ai_analysis || {};
-                const keywords = aiAnalysis.keywords_en || [];
-                const rating = aiAnalysis.innovation_rating || 0;
-
-                detailContent.innerHTML = `
-                    <div class="max-w-4xl mx-auto">
-                        <p class="text-sm text-slate-500 mb-2">${article.published}</p>
-                        <h1 class="text-2xl md:text-3xl font-bold text-slate-900 mb-2">${article.title}</h1>
-                        <p class="text-slate-600 mb-6">${article.authors.join(', ')}</p>
-                        
-                        <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-                            <h2 class="text-xl font-semibold text-slate-800 mb-4">AI 智能分析</h2>
-                            <div class="space-y-6">
-                                <div>
-                                    <h3 class="font-semibold text-blue-800 mb-2">提煉摘要</h3>
-                                    <p class="text-slate-700 leading-relaxed">${aiAnalysis.simplified_summary_zh || '無'}</p>
-                                </div>
-                                <div>
-                                    <h3 class="font-semibold text-slate-600 mb-2">核心關鍵詞</h3>
-                                    <div class="flex flex-wrap gap-2">
-                                        ${keywords.map(kw => `<span class="bg-slate-200 text-slate-700 text-xs font-medium px-2.5 py-1 rounded-full">${kw}</span>`).join('') || '<span class="text-slate-400 text-sm">無</span>'}
-                                    </div>
-                                </div>
-                                <div class="flex items-center">
-                                    <h3 class="font-semibold text-slate-600 mr-3">創新性評分</h3>
-                                    <div class="flex items-center space-x-0.5">${renderStars(rating)}</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-6">
-                            <a href="${article.pdf_url}" target="_blank" class="inline-flex items-center justify-center bg-blue-600 text-white font-semibold px-5 py-2.5 rounded-md hover:bg-blue-700 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10.4 12.6a2 2 0 1 1 3 3L8 21l-4 1 1-4Z"/><path d="M18 12.6a2 2 0 0 0-3-3L6 19l-1.5 1.5a2.828 2.828 0 1 0 4 4L18 12.6Z"/></svg>
-                                閱讀原文 (PDF)
-                            </a>
-                        </div>
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50">
+        <div class="bg-slate-800 border border-slate-700 rounded-lg shadow-xl w-full max-w-md">
+            <div class="p-4 border-b border-slate-700 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-slate-100">偏好设置</h3>
+                <button id="close-modal-btn" class="text-slate-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div class="p-6">
+                <div class="mb-4">
+                    <label class="font-semibold text-slate-200 block mb-2">研究关键词</label>
+                    <div id="keywords-list" class="flex flex-wrap gap-2 mb-2"></div>
+                    <div class="flex">
+                        <input type="text" id="new-keyword-input" placeholder="新增关键词" class="flex-grow bg-slate-900 border border-slate-600 rounded-l-md p-2 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                        <button id="add-keyword-btn" class="bg-sky-600 text-white font-semibold px-4 rounded-r-md hover:bg-sky-500">新增</button>
                     </div>
-                `;
-                detailPlaceholder.classList.add('hidden');
-                detailContent.classList.remove('hidden');
+                </div>
+            </div>
+        </div>
+    </div>
 
-                // 更新左側列表的選中狀態
-                document.querySelectorAll('.article-item').forEach(item => {
-                    item.classList.toggle('active', item.dataset.id === articleId);
-                });
-            }
+    <script>
+    // --- App State ---
+    let articlesData = [];
+    let currentArticleId = null;
+    let currentTab = 'summary';
+    const API_BASE_URL = 'http://127.0.0.1:5006';
 
-            // API URL, 請確保端口號與您的後端服務一致
-            const apiUrl = 'http://127.0.0.1:5006/api/summaries';
+    // --- DOM Elements ---
+    const articleListEl = document.getElementById('article-list');
+    const detailPlaceholderEl = document.getElementById('detail-placeholder');
+    const detailViewEl = document.getElementById('detail-view');
+    const detailContentEl = document.getElementById('detail-content');
+    const settingsBtn = document.getElementById('settings-btn');
+    const settingsModal = document.getElementById('settings-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const keywordsListEl = document.getElementById('keywords-list');
+    const newKeywordInput = document.getElementById('new-keyword-input');
+    const addKeywordBtn = document.getElementById('add-keyword-btn');
 
-            fetch(apiUrl)
-                .then(response => {
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    return response.json();
-                })
-                .then(articles => {
-                    loadingList.style.display = 'none';
-                    articlesData = articles;
-
-                    if (articlesData.length === 0) {
-                        articleList.innerHTML = '<li class="p-4 text-center text-slate-500">資料庫中沒有文章。</li>';
-                        return;
-                    }
-                    
-                    articlesData.forEach(article => {
-                        const li = document.createElement('li');
-                        li.className = 'article-item p-4 border-b border-r-4 border-transparent cursor-pointer hover:bg-slate-100';
-                        li.dataset.id = article.id;
-                        
-                        const aiAnalysis = article.ai_analysis || {};
-                        const keywords = (aiAnalysis.keywords_en || []).slice(0, 2);
-
-                        li.innerHTML = `
-                            <h3 class="font-semibold text-slate-800 truncate">${article.title}</h3>
-                            <p class="text-sm text-slate-500 mt-1">${article.published}</p>
-                            <div class="flex flex-wrap gap-1 mt-2">
-                                ${keywords.map(kw => `<span class="bg-slate-200 text-slate-600 text-xs px-2 py-0.5 rounded">${kw}</span>`).join('')}
-                            </div>
-                        `;
-                        
-                        li.addEventListener('click', () => displayArticleDetails(article.id));
-                        articleList.appendChild(li);
-                    });
-
-                    // 默認顯示第一篇文章的詳細內容
-                    if (articlesData.length > 0) {
-                        displayArticleDetails(articlesData[0].id);
-                    }
-                })
-                .catch(error => {
-                    console.error('獲取文章數據時出錯:', error);
-                    loadingList.innerHTML = '<p class="text-red-600 p-4 text-center">加載失敗，請檢查後端服務。</p>';
-                });
+    // --- API Functions ---
+    async function fetchKeywords() {
+        const response = await fetch(`${API_BASE_URL}/api/keywords`);
+        return response.json();
+    }
+    async function addKeyword(keyword) {
+        await fetch(`${API_BASE_URL}/api/keywords`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({keyword})
         });
-    </script>
+    }
+    async function deleteKeyword(keyword) {
+        await fetch(`${API_BASE_URL}/api/keywords/${keyword}`, { method: 'DELETE' });
+    }
+    async function fetchArticles() {
+        const response = await fetch(`${API_BASE_URL}/api/articles`);
+        articlesData = await response.json();
+    }
+    async function fetchArticleDetails(id) {
+        const response = await fetch(`${API_BASE_URL}/api/articles/${id}`);
+        return response.json();
+    }
+    async function postQuestion(id, question) {
+        const response = await fetch(`${API_BASE_URL}/api/articles/${id}/ask`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({question})
+        });
+        return response.json();
+    }
 
+    // --- Render Functions ---
+    function renderKeywords(keywords) {
+        keywordsListEl.innerHTML = keywords.map(kw => `
+            <span class="bg-slate-700 text-slate-200 text-sm px-2 py-1 rounded flex items-center">
+                ${kw}
+                <button data-keyword="${kw}" class="delete-keyword-btn ml-2 text-slate-400 hover:text-red-400">&times;</button>
+            </span>
+        `).join('');
+    }
+
+    function renderArticleList() {
+        if (articlesData.length === 0) {
+            articleListEl.innerHTML = '<li class="p-4 text-center text-slate-400">数据库中没有文章。</li>';
+            return;
+        }
+        articleListEl.innerHTML = articlesData.map(article => {
+            const summary = article.summary_analysis || {};
+            const keywords = (summary.keywords_en || []).slice(0, 2);
+            return `
+            <li class="article-item p-4 border-b border-slate-700 border-r-4 border-transparent cursor-pointer hover:bg-slate-700/50" data-id="${article.id}">
+                <h3 class="font-semibold text-slate-200 truncate">${article.title}</h3>
+                <p class="text-sm text-slate-400 mt-1">${article.published}</p>
+                <div class="flex flex-wrap gap-1 mt-2">
+                    ${keywords.map(kw => `<span class="bg-slate-600 text-slate-300 text-xs px-2 py-0.5 rounded">${kw}</span>`).join('')}
+                </div>
+            </li>`;
+        }).join('');
+    }
+
+    async function renderDetailView(id) {
+        currentArticleId = id;
+        const article = await fetchArticleDetails(id);
+        
+        detailPlaceholderEl.classList.add('hidden');
+        detailViewEl.classList.remove('hidden');
+
+        document.querySelectorAll('.article-item').forEach(item => {
+            item.classList.toggle('active', parseInt(item.dataset.id) === id);
+        });
+        
+        renderTabContent(article);
+    }
+
+    function renderTabContent(article) {
+        let content = '';
+        if (currentTab === 'summary') {
+            const summary = article.summary_analysis || {};
+            content = `
+                <h1 class="text-2xl font-bold text-slate-100 mb-2">${article.title}</h1>
+                <p class="text-slate-400 mb-6">${article.authors.join(', ')}</p>
+                <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <p class="text-slate-300 leading-relaxed">${summary.simplified_summary_zh || '无摘要'}</p>
+                </div>`;
+        } else if (currentTab === 'detailed') {
+            const detailed = article.detailed_analysis || {};
+            content = `
+                <h1 class="text-2xl font-bold text-slate-100 mb-6">${article.title}</h1>
+                <div class="space-y-6 text-slate-300">
+                    <div><h3 class="font-semibold text-lg text-sky-400 mb-2">研究背景</h3><p>${detailed.background || ''}</p></div>
+                    <div><h3 class="font-semibold text-lg text-sky-400 mb-2">使用方法</h3><p>${detailed.methodology || ''}</p></div>
+                    <div><h3 class="font-semibold text-lg text-sky-400 mb-2">核心创新点</h3><ul class="list-disc list-inside space-y-1">${(detailed.key_innovations || []).map(i => `<li>${i}</li>`).join('')}</ul></div>
+                    <div><h3 class="font-semibold text-lg text-sky-400 mb-2">潜在影响</h3><p>${detailed.potential_impact || ''}</p></div>
+                </div>`;
+        } else if (currentTab === 'qna') {
+            content = `
+                <h1 class="text-2xl font-bold text-slate-100 mb-6">论文问答</h1>
+                <div id="qna-history" class="mb-4 space-y-4"></div>
+                <div class="flex">
+                    <input type="text" id="qna-input" placeholder="针对这篇文章提问..." class="flex-grow bg-slate-900 border border-slate-600 rounded-l-md p-2 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                    <button id="qna-submit-btn" class="bg-sky-600 text-white font-semibold px-4 rounded-r-md hover:bg-sky-500">发送</button>
+                </div>`;
+        }
+        detailContentEl.innerHTML = content;
+    }
+
+    // --- Event Handlers ---
+    async function handleKeywordAdd() {
+        const newKeyword = newKeywordInput.value.trim();
+        if (newKeyword) {
+            await addKeyword(newKeyword);
+            newKeywordInput.value = '';
+            const keywords = await fetchKeywords();
+            renderKeywords(keywords);
+        }
+    }
+
+    async function handleKeywordDelete(e) {
+        if (e.target.classList.contains('delete-keyword-btn')) {
+            const keyword = e.target.dataset.keyword;
+            await deleteKeyword(keyword);
+            const keywords = await fetchKeywords();
+            renderKeywords(keywords);
+        }
+    }
+
+    async function handleQnaSubmit() {
+        const input = document.getElementById('qna-input');
+        const question = input.value.trim();
+        if (!question) return;
+        
+        const historyEl = document.getElementById('qna-history');
+        historyEl.innerHTML += `<div class="text-right"><span class="bg-sky-600 text-white p-2 rounded-lg inline-block">${question}</span></div>`;
+        input.value = '';
+        input.disabled = true;
+        
+        const result = await postQuestion(currentArticleId, question);
+        historyEl.innerHTML += `<div><span class="bg-slate-700 text-slate-200 p-2 rounded-lg inline-block">${result.answer}</span></div>`;
+        input.disabled = false;
+        input.focus();
+    }
+
+    // --- Initialization ---
+    async function initialize() {
+        try {
+            await fetchArticles();
+            renderArticleList();
+
+            settingsBtn.addEventListener('click', async () => {
+                const keywords = await fetchKeywords();
+                renderKeywords(keywords);
+                settingsModal.classList.remove('hidden');
+                settingsModal.classList.add('flex');
+            });
+            closeModalBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+            addKeywordBtn.addEventListener('click', handleKeywordAdd);
+            keywordsListEl.addEventListener('click', handleKeywordDelete);
+            
+            articleListEl.addEventListener('click', (e) => {
+                const item = e.target.closest('.article-item');
+                if (item) renderDetailView(parseInt(item.dataset.id));
+            });
+
+            detailViewEl.addEventListener('click', async (e) => {
+                if (e.target.matches('.tab')) {
+                    currentTab = e.target.dataset.tab;
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    e.target.classList.add('active');
+                    const article = await fetchArticleDetails(currentArticleId);
+                    renderTabContent(article);
+                }
+                if (e.target.id === 'qna-submit-btn') {
+                    handleQnaSubmit();
+                }
+            });
+            
+            if (articlesData.length > 0) {
+                renderDetailView(articlesData[0].id);
+                document.querySelector('.tab[data-tab="summary"]').classList.add('active');
+            }
+        } catch (error) {
+            console.error("Initialization failed:", error);
+            articleListEl.innerHTML = `<li class="p-4 text-center text-red-400">加载失败。请确保后端服务正在运行，并且浏览器可以访问 ${API_BASE_URL}。</li>`;
+        }
+    }
+
+    initialize();
+    </script>
 </body>
 </html>
