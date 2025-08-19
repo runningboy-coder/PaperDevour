@@ -1,0 +1,26 @@
+# 忽略 Git 文件夹
+.git/
+
+# 忽略 Python 虚拟环境
+.env
+venv/
+ENV/
+
+# 忽略 Python 缓存和临时文件
+__pycache__/
+*.pyc
+
+# 忽略数据库文件
+research_assistant.db
+
+# 忽略 IDE 和操作系统生成的文件
+.vscode/
+.idea/
+*.DS_Store
+# 忽略所有 macOS 的元数据文件 (._*)，解决 xattr 权限问题
+._*
+
+# 忽略 Docker 相关文件
+Dockerfile
+docker-compose.yml
+.dockerignore

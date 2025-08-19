@@ -6,3 +6,4 @@ arxiv
 openai
 requests
 python-dotenv
+gunicorn

@@ -1,0 +1,22 @@
+
+services:
+  # 定义我们的应用服务，可以任意命名，这里叫 app
+  app:
+    # 使用当前目录下的 Dockerfile 来构建镜像
+    build: .
+    # 为构建的镜像命名
+    image: paperdevour-app
+    # 将容器的 5006 端口映射到我们电脑的 5006 端口
+    ports:
+      - "5006:5006"
+    # 挂载卷，这是实现代码热重载的关键
+    # 它会将我们本地的项目文件夹映射到容器的 /app 文件夹
+    # 这样一来，本地代码的任何修改都会立即同步到容器内
+    volumes:
+      - .:/app
+    # 指定要加载的环境变量文件
+    env_file:
+      - .env
+    # 在开发模式下，覆盖 Dockerfile 中的 CMD，使用 Flask 自带的服务器
+    # 它支持热重载，修改代码后服务会自动重启，非常方便
+    command: python app.py
