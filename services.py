@@ -3,10 +3,12 @@ import os
 import re
 import arxiv
 import json
+import shutil # *** 新增匯入 ***
 from datetime import datetime
 from openai import OpenAI
 from models import db, Keyword, Author, Article, Analysis
 from dotenv import load_dotenv
+import tarfile
 
 # 加载 .env 文件中的环境变量
 load_dotenv()
@@ -147,6 +149,27 @@ class ArxivService:
         except Exception as e:
             print(f"Failed to download PDF for {paper.title}: {e}")
 
+         # *** 新增功能: 提取图片 ***
+        image_paths = []
+        try:
+            source_path = paper.download_source(dirpath=paper_folder_path)
+            images_dir = os.path.join(paper_folder_path, "images")
+            os.makedirs(images_dir, exist_ok=True)
+            
+            with tarfile.open(source_path, 'r:gz') as tar:
+                for member in tar.getmembers():
+                    if member.isfile() and member.name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+                        filename = os.path.basename(member.name)
+                        target_path = os.path.join(images_dir, filename)
+                        with tar.extractfile(member) as source, open(target_path, 'wb') as target:
+                            shutil.copyfileobj(source, target)
+                        # 存储相对路径以便前端访问
+                        relative_path  = f"{os.path.basename(paper_folder_path)}/images/{filename}"
+                        image_paths.append(relative_path)
+            os.remove(source_path) # 清理源码压缩包
+        except Exception as e:
+            print(f"Could not download or extract source for images: {e}")
+
         # 创建文章记录
         new_article = Article(
             entry_id=paper.entry_id,
@@ -155,7 +178,8 @@ class ArxivService:
             pdf_url=paper.pdf_url,
             original_summary=paper.summary,
             local_path=paper_folder_path,
-            authors=authors_in_db
+            authors=authors_in_db,
+            image_paths=image_paths
         )
         db.session.add(new_article)
         db.session.commit()
@@ -208,8 +232,13 @@ def run_fetch_and_process_job():
 
 def batch_import_and_process(entry_ids):
     print(f"Starting batch import for {len(entry_ids)} articles.")
+    # *** 再次修復 ***: 提取 /abs/ 後面的所有部分作為完整 ID
+    # 這樣可以同時處理 'astro-ph/0004127v2' 和 '2401.12345' 這類格式
+    paper_ids = [eid.split('/abs/')[-1] for eid in entry_ids if '/abs/' in eid]
+    
     client = arxiv.Client()
-    search = arxiv.Search(id_list=entry_ids)
+    # 使用清理過的 paper_ids 進行搜索
+    search = arxiv.Search(id_list=paper_ids)
     
     for paper in client.results(search):
         article_in_db = ArxivService.process_and_save_paper(paper)

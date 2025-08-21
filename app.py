@@ -2,7 +2,7 @@
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from database import db, init_database
-from models import Keyword, Author, Article, Analysis, QnaHistory
+from models import Keyword, Author, Article, Analysis, QnaHistory, Setting # *** 1. 匯入 Setting ***
 import services
 import scheduler
 
@@ -16,19 +16,55 @@ CORS(app)
 
 # --- API 路由 ---
 
-@app.route('/api/articles')
-def get_articles():
+@app.route('/api/settings', methods=['GET', 'POST'])
+def manage_settings():
+    # *** 2. 修復 setting -> Setting ***
+    if request.method == 'POST':
+        settings_data = request.json
+        for key, value in settings_data.items():
+            setting = Setting.query.filter_by(key=key).first()
+            if setting:
+                setting.value = str(value)
+            else:
+                setting = Setting(key=key, value=str(value))
+                db.session.add(setting)
+        db.session.commit()
+    
+    settings = Setting.query.all()
+    return jsonify({s.key: s.value for s in settings})
+
+
+# *** 3. 將 /api/articles 重命名為 /api/articles/latest 並增加 is_favorited ***
+@app.route('/api/articles/latest')
+def get_latest_articles():
     articles = Article.query.order_by(Article.published.desc()).all()
     results = []
     for article in articles:
-        # 只獲取簡易分析用於列表展示
         simple_analysis = Analysis.query.filter_by(article_id=article.id, analysis_type='summary').first()
         results.append({
             'id': article.id,
             'title': article.title,
             'published': article.published.strftime('%Y-%m-%d'),
             'authors': [author.name for author in article.authors],
-            'summary_analysis': simple_analysis.content if simple_analysis else None
+            'summary_analysis': simple_analysis.content if simple_analysis else None,
+            'is_favorited': article.is_favorited # <-- 新增
+        })
+    return jsonify(results)
+
+# *** 4. 新增 /api/articles/favorites 路由 ***
+@app.route('/api/articles/favorites')
+def get_favorite_articles():
+    articles = Article.query.filter_by(is_favorited=True).order_by(Article.published.desc()).all()
+    results = []
+    for article in articles:
+        simple_analysis = Analysis.query.filter_by(article_id=article.id, analysis_type='summary').first()
+        results.append({
+            'id': article.id,
+            'title': article.title,
+            'published': article.published.strftime('%Y-%m-%d'),
+            'authors': [author.name for author in article.authors],
+            'summary_analysis': simple_analysis.content if simple_analysis else None,
+            'is_favorited': article.is_favorited
         })
     return jsonify(results)
 
@@ -48,8 +84,18 @@ def get_article_details(article_id):
         'original_summary': article.original_summary,
         'summary_analysis': summary.content if summary else None,
         'detailed_analysis': detailed.content if detailed else None,
-        'qna_history': [{'question': q.question, 'answer': q.answer} for q in qna_history]
+        'qna_history': [{'question': q.question, 'answer': q.answer} for q in qna_history],
+        'is_favorited': article.is_favorited # <-- 新增
     })
+
+# *** 5. 新增收藏/取消收藏的路由 ***
+@app.route('/api/articles/<int:article_id>/favorite', methods=['POST'])
+def toggle_favorite_status(article_id):
+    article = Article.query.get_or_404(article_id)
+    article.is_favorited = not article.is_favorited
+    db.session.commit()
+    return jsonify({'status': 'success', 'is_favorited': article.is_favorited})
+
 
 @app.route('/api/articles/<int:article_id>/ask', methods=['POST'])
 def ask_question(article_id):
@@ -126,9 +172,17 @@ def delete_keyword(keyword_text):
         db.session.commit()
     return jsonify({'success': True})
 
+# *** 新增路由 ***: 用於提供媒體檔案 (圖片)
+@app.route('/media/<path:subpath>')
+def serve_media(subpath):
+    # 從 services 配置中獲取儲存路徑
+    return send_from_directory(services.SAVE_PATH, subpath)
+
 @app.route('/')
 def index():
     return send_from_directory('static', 'index.html')
+
+
 
 if __name__ == '__main__':
     with app.app_context():

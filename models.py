@@ -25,11 +25,13 @@ class Article(db.Model):
     pdf_url = db.Column(db.String(255))
     original_summary = db.Column(db.Text)
     local_path = db.Column(db.String(255))
+    image_paths = db.Column(db.JSON, default=list)  # 存储图片路径的列表
     authors = db.relationship('Author', secondary=article_author_association, back_populates='articles')
-    # 級聯刪除：當文章被刪除時，其所有關聯的分析和問答記錄也會被自動刪除
     analyses = db.relationship('Analysis', backref='article', lazy=True, cascade="all, delete-orphan")
     qna_history = db.relationship('QnaHistory', backref='article', lazy=True, cascade="all, delete-orphan")
+    is_favorited = db.Column(db.Boolean, default=False, nullable=False)
 
+    
 class Analysis(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     article_id = db.Column(db.Integer, db.ForeignKey('article.id'), nullable=False)
@@ -44,3 +46,9 @@ class QnaHistory(db.Model):
     question = db.Column(db.Text, nullable=False)
     answer = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Setting(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(50), unique=True, nullable=False)
+    value = db.Column(db.String(255), nullable=False)
