@@ -1,7 +1,7 @@
 # PaperDevour 吞文研究助手
 
 <p align="center">
-  <img src="https://placehold.co/600x300/0f172a/38bdf8?text=PaperDevour&font=raleway" alt="PaperDevour Banner">
+  <img src="static/imgs/logo.png" alt="PaperDevour Banner">
 </p>
 
 <p align="center">
