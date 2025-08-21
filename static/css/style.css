@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+html, body { 
+    height: 100%; 
+    overflow: hidden; 
+}
+
+body { 
+    font-family: 'Inter', sans-serif; 
+    background-color: #020617; /* bg-slate-950 */
+    color: #94a3b8; /* text-slate-400 */
+}
+
+::-webkit-scrollbar { 
+    width: 8px; 
+}
+
+::-webkit-scrollbar-track { 
+    background: #1e293b; /* bg-slate-800 */
+}
+
+::-webkit-scrollbar-thumb { 
+    background: #475569; /* bg-slate-600 */
+    border-radius: 4px;
+}
+
+.nav-item.active { 
+    color: #e2e8f0; /* text-slate-200 */
+    background-color: #1e293b; /* bg-slate-800 */
+}
+
+.tab-item.active { 
+    color: #38bdf8; /* text-sky-400 */
+    border-bottom-color: #38bdf8; 
+}
+
+.modal-content { 
+    max-height: 80vh; 
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    padding: 10px 20px;
+    background-color: #1e293b;
+    color: #e2e8f0;
+    border-radius: 8px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s, transform 0.5s;
+    transform: translate(-50%, 10px);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
