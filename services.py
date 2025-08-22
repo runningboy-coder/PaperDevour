@@ -7,7 +7,7 @@ import json
 import shutil
 from datetime import datetime
 from openai import OpenAI
-from models import db, Keyword, Author, Article, Analysis
+from models import db, Keyword, Author, Article, Analysis, User
 from dotenv import load_dotenv
 import tarfile
 
