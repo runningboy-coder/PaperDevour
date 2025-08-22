@@ -1,6 +1,19 @@
 # models.py
 from database import db
 from datetime import datetime
+from flask_login import UserMixin
+
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    api_key = db.Column(db.String(255), nullable=True) # 每个使用者储存自己的 API Key
+
+    # User 模型反向关联其他模型
+    keywords = db.relationship('Keyword', backref='user', lazy=True, cascade="all, delete-orphan")
+    articles = db.relationship('Article', backref='user', lazy=True, cascade="all, delete-orphan")
+
 
 # 多對多關係的關聯表
 article_author_association = db.Table('article_author_association',
@@ -52,3 +65,4 @@ class Setting(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     key = db.Column(db.String(50), unique=True, nullable=False)
     value = db.Column(db.String(255), nullable=False)
+

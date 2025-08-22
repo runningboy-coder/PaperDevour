@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- App State ---
+    let isLoggedIn = false;
     let currentView = 'home';
     let currentArticleId = null;
     let currentTab = 'summary';
@@ -11,37 +12,100 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsModal = document.getElementById('settings-modal');
     const searchResultsModal = document.getElementById('search-results-modal');
 
+
+
     // --- API Functions ---
     async function fetchApi(url, options = {}) {
+        // 确保所有请求都携带凭证 (cookies)
+        options.credentials = 'include';
         try {
             const response = await fetch(url, options);
+            if (response.status === 401) { // 如果未授权
+                updateNav(null);
+                navigate('login');
+                throw new Error('Unauthorized');
+            }
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return response.json();
+            // 检查响应是否为空
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                return response.json();
+            } else {
+                return {}; // 返回空对象而非尝试解析空响应
+            }
         } catch (error) {
-            console.error(`Fetch error for ${url}:`, error);
-            showToast(`操作失败: ${error.message}`);
+            if (error.message !== 'Unauthorized') {
+                console.error(`Fetch error for ${url}:`, error);
+                showToast(`操作失败: ${error.message}`);
+            }
             throw error;
         }
     }
 
+     // *** 修正 #1: 将所有 API 函数整合到一个物件中 ***
     const api = {
+        // 核心 API
         getLatest: () => fetchApi(`${API_BASE_URL}/api/articles/latest`),
         getFavorites: () => fetchApi(`${API_BASE_URL}/api/articles/favorites`),
         getArticleDetails: (id) => fetchApi(`${API_BASE_URL}/api/articles/${id}`),
         toggleFavorite: (id) => fetchApi(`${API_BASE_URL}/api/articles/${id}/favorite`, { method: 'POST' }),
         postQuestion: (id, question) => fetchApi(`${API_BASE_URL}/api/articles/${id}/ask`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({question}) }),
-        deleteArticle: (id) => fetchApi(`${API_BASE_URL}/api/articles/${id}`, { method: 'DELETE' }), // *** 新增 ***
+        deleteArticle: (id) => fetchApi(`${API_BASE_URL}/api/articles/${id}`, { method: 'DELETE' }),
         getKeywords: () => fetchApi(`${API_BASE_URL}/api/keywords`),
         addKeyword: (keyword) => fetchApi(`${API_BASE_URL}/api/keywords`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({keyword}) }),
         deleteKeyword: (keyword) => fetchApi(`${API_BASE_URL}/api/keywords/${keyword}`, { method: 'DELETE' }),
         searchArticles: (query) => fetchApi(`${API_BASE_URL}/api/articles/search?query=${encodeURIComponent(query)}`),
         batchImport: (entry_ids) => fetchApi(`${API_BASE_URL}/api/articles/batch-import`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({entry_ids}) }),
         fetchOnDemand: () => fetchApi(`${API_BASE_URL}/api/articles/fetch`, { method: 'POST' }),
-        getSettings: () => fetchApi(`${API_BASE_URL}/api/settings`),
-        saveSettings: (settings) => fetchApi(`${API_BASE_URL}/api/settings`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(settings) }),
-    };
 
+        // 认证 API
+        auth: {
+            register: (username, password) => fetchApi(`${API_BASE_URL}/api/auth/register`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, password})
+            }),
+            login: (username, password) => fetchApi(`${API_BASE_URL}/api/auth/login`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, password})
+            }),
+            logout: () => fetchApi(`${API_BASE_URL}/api/auth/logout`, { method: 'POST' }),
+            checkStatus: () => fetchApi(`${API_BASE_URL}/api/auth/status`),
+        },
+
+        // 使用者设定 API
+        user: {
+            getSettings: () => fetchApi(`${API_BASE_URL}/api/user/settings`),
+            saveSettings: (settings) => fetchApi(`${API_BASE_URL}/api/user/settings`, { 
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(settings) 
+            }),
+        }
+    };
     // --- UI Helpers ---
+    function updateNav(username) {
+        const mainNav = document.getElementById('main-nav');
+        const authNav = document.getElementById('auth-nav');
+        const userPanel = document.getElementById('user-panel');
+        const usernameDisplay = document.getElementById('username-display');
+
+        if (username) {
+            isLoggedIn = true;
+            mainNav.classList.remove('hidden');
+            authNav.classList.add('hidden');
+            userPanel.classList.remove('hidden');
+            usernameDisplay.textContent = `欢迎, ${username}`;
+        } else {
+            isLoggedIn = false;
+            mainNav.classList.add('hidden');
+            authNav.classList.remove('hidden');
+            userPanel.classList.add('hidden');
+        }
+    }
+
+
     const showToast = (message) => {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
@@ -131,6 +195,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div id="detail-tab-content"></div>
             `;
             renderDetailTabContent(article);
+        },
+
+        login: () => {
+            mainContentEl.innerHTML = `
+                <div class="max-w-md mx-auto">
+                    <h1 class="text-3xl font-bold text-slate-100 mb-6">登录</h1>
+                    <form id="login-form" class="space-y-4">
+                        <input type="text" id="login-username" placeholder="用户名" required class="...">
+                        <input type="password" id="login-password" placeholder="密码" required class="...">
+                        <button type="submit" class="bg-sky-600 ...">登录</button>
+                    </form>
+                </div>
+            `;
+        },
+
+        register: () => {
+            mainContentEl.innerHTML = `
+                <div class="max-w-md mx-auto">
+                    <h1 class="text-3xl font-bold text-slate-100 mb-6">注册</h1>
+                    <form id="register-form" class="space-y-4">
+                        <input type="text" id="register-username" placeholder="用户名" required class="...">
+                        <input type="password" id="register-password" placeholder="密码" required class="...">
+                        <button type="submit" class="bg-sky-600 ...">注册</button>
+                    </form>
+                </div>
+            `;
         }
     };
 
@@ -230,11 +320,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Navigation & Event Handlers ---
     async function navigate(view) {
+        if(!isLoggedIn && !['login', 'register'].includes(view)) {
+            view = 'login';
+        }
         currentView = view;
         document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('active', item.dataset.view === view));
         
         mainContentEl.innerHTML = '<p class="text-slate-500">加载中...</p>';
         await renderers[view]();
+    }
+
+    async function handleLogout() {
+        await api.auth.logout();
+        updateNav(null);
+        navigate('login');
     }
 
     async function handleFetchNow() {
@@ -352,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setupEventListeners() {
         // Left Nav
-        document.querySelector('nav').addEventListener('click', (e) => {
+        navPanel.addEventListener('click', (e) => {
             const navLink = e.target.closest('.nav-item');
             if (navLink) {
                 e.preventDefault();
@@ -360,6 +459,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (e.target.closest('#settings-btn')) {
                 handleOpenSettings();
+            }
+            if (e.target.closest('#logout-btn')) {
+                handleLogout();
             }
         });
 
@@ -436,6 +538,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // --- Initial Load ---
+    async function initializeApp() {
+        try {
+            const status = await api.auth.checkStatus();
+            if (status.isLoggedIn) {
+                updateNav(status.username);
+                navigate('home');
+            } else {
+                updateNav(null);
+                navigate('login');
+            }
+        } catch (error) {
+            updateNav(null);
+            navigate('login');
+        }
+    }
     setupEventListeners();
-    navigate('home');
+    initializeApp(); // *** 修正 #3: 使用正确的初始化函数 ***
 });
