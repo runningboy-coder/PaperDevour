@@ -17,21 +17,36 @@
             <img src="/static/imgs/logo.png" alt="PaperDevour Logo" class="h-8 w-8">
             <span class="font-bold text-xl text-slate-200">PaperDevour</span>
         </div>
-        <ul class="space-y-2">
+        
+        <ul id="main-nav" class="space-y-2 hidden">
             <li><a href="#" class="nav-item active flex items-center space-x-3 px-3 py-2 rounded-md" data-view="home">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                 <span>主页</span></a></li>
             <li><a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-md" data-view="favorites">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21-7-4-7 21"/><path d="M5 21H19"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21-7-4-7 21"/><path d="M5 21H19"/></svg>
                 <span>我的收藏</span></a></li>
             <li><a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-md" data-view="search">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 <span>搜索与导入</span></a></li>
         </ul>
-        <div class="mt-auto">
+
+        <ul id="auth-nav" class="space-y-2">
+             <li><a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-md" data-view="login">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
+                <span>登录</span></a></li>
+             <li><a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-md" data-view="register">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" x2="16" y1="11" y2="11"/><line x1="19" x2="19" y1="8" y2="14"/></svg>
+                <span>注册</span></a></li>
+        </ul>
+
+        <div id="user-panel" class="mt-auto hidden">
              <button id="settings-btn" class="w-full flex items-center space-x-3 px-3 py-2 rounded-md hover:bg-slate-800 text-slate-400 hover:text-slate-200">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                 <span>设置</span></button>
+             <div class="text-center mt-4 border-t border-slate-800 pt-4">
+                <span id="username-display" class="text-slate-400 text-sm"></span>
+                <button id="logout-btn" class="text-red-500 hover:text-red-400 text-sm font-semibold ml-2">[ 登出 ]</button>
+             </div>
         </div>
     </nav>
 
@@ -46,21 +61,13 @@
             </div>
             <div class="p-6 space-y-4">
                 <div>
-                    <label class="font-semibold text-slate-200 block mb-2">AI 模型</label>
-                    <select id="setting-model-name" class="w-full bg-slate-900 border border-slate-600 rounded-md p-2">
-                        <option value="deepseek-chat">DeepSeek Chat</option>
-                        <option value="another-model">其他模型 (示例)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="font-semibold text-slate-200 block mb-2">API Key</label>
-                    <input type="password" id="setting-api-key" placeholder="填入您的 API Key" class="w-full bg-slate-900 border border-slate-600 rounded-md p-2">
+                    <label class="font-semibold text-slate-200 block mb-2">我的 AI API Key</label>
+                    <input type="password" id="setting-api-key" placeholder="填入您自己的 API Key" class="w-full bg-slate-900 border border-slate-600 rounded-md p-2">
                 </div>
                 <div>
                     <label class="font-semibold text-slate-200 block mb-2">单次抓取数量</label>
                     <input type="number" id="setting-fetch-count" value="5" min="1" max="20" class="w-full bg-slate-900 border border-slate-600 rounded-md p-2">
                 </div>
-
                 <div class="border-t border-slate-700 pt-4">
                     <label class="font-semibold text-slate-200 block mb-2">监控关键词</label>
                     <div class="flex items-center space-x-2 mb-3">

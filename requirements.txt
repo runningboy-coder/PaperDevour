@@ -7,3 +7,4 @@ openai
 requests
 python-dotenv
 gunicorn
+pybtex
